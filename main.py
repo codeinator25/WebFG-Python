@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QVBoxLayout, Q
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtCore import QUrl
 
-class Browser(QMainWindow):
+class Browser(QMainWindow): # Open the homepage on startup
     def __init__(self):
         super().__init__()
         self.browser = QWebEngineView()
@@ -18,13 +18,13 @@ class Browser(QMainWindow):
 
         # Create navigation buttons
         self.back_button = QPushButton("Back")
-        self.back_button.clicked.connect(self.go_back)
+        self.back_button.clicked.connect(self.go_back) # Go to the previous page
 
         self.forward_button = QPushButton("Forward")
-        self.forward_button.clicked.connect(self.go_forward)
+        self.forward_button.clicked.connect(self.go_forward) # Go to the following page
 
         self.refresh_button = QPushButton("Refresh")
-        self.refresh_button.clicked.connect(self.refresh_page)
+        self.refresh_button.clicked.connect(self.refresh_page) # Refresh the page
 
         self.home_button = QPushButton("Home") 
         self.home_button.clicked.connect(self.go_home) # Take action upon clicking the button
@@ -77,7 +77,7 @@ class Browser(QMainWindow):
 
     def on_load_started(self):
         self.loading_bar.setValue(0) # Reset loading bar
-        self.loading_bar.setMaximum(100) # Indeterminate mode (?)
+        self.loading_bar.setMaximum(100)
 
     def on_load_finished(self, success):
         self.loading_bar.setValue(100) # Set loading bar to complete
@@ -89,7 +89,7 @@ class Browser(QMainWindow):
     def update_load(self, progress): # Fill the loading bar using increments from the current progress
         self.loading_bar.setValue(progress)
 
-if __name__ == "__main__":
+if __name__ == "__main__": # I don't know why I did this
     app = QApplication(sys.argv)
     window = Browser()
     sys.exit(app.exec())
