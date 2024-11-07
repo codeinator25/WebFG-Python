@@ -8,6 +8,7 @@ class Browser(QMainWindow):
         super().__init__()
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://www.google.com"))
+        self.browser.loadProgress.connect(self.update_load)
 
         # Create a progress bar
         self.loading_bar = QProgressBar()
@@ -46,7 +47,7 @@ class Browser(QMainWindow):
         container.setLayout(self.layout)
         self.setCentralWidget(container)
 
-        self.setWindowTitle("WebMD Project - Browser")  # Set the window title
+        self.setWindowTitle("WebFG Project - Browser")  # Set the window title
         self.resize(1000, 700)  # Set the window size
 
         # Connect signals for loading progress
@@ -74,18 +75,19 @@ class Browser(QMainWindow):
         url = "http://google.com" # Desired home page
         self.browser.setUrl(QUrl(url)) # Going to the home page
 
-    def progress_bar(self):
-        def on_load_started(self):
-            self.loading_bar.setValue(0) # Reset loading bar
-            self.loading_bar.setMaximum(0) # Indeterminate mode (?)
+    def on_load_started(self):
+        self.loading_bar.setValue(0) # Reset loading bar
+        self.loading_bar.setMaximum(100) # Indeterminate mode (?)
 
-        def on_load_finished(self, success):
-            self.loading_bar.setMaximum(1) # Set maximum to 1 for completion
-            self.loading_bar.setValue(1) # Set loading bar to complete
-            if success:
-                self.url_bar.setText(self.browser.url().toString()) # Update URL bar with current URL
-            else:
-                print("Failed to load page.")
+    def on_load_finished(self, success):
+        self.loading_bar.setValue(100) # Set loading bar to complete
+        if success:
+            self.url_bar.setText(self.browser.url().toString()) # Update URL bar with current URL
+        else:
+            print("Failed to load page.")
+
+    def update_load(self, progress): # Fill the loading bar using increments from the current progress
+        self.loading_bar.setValue(progress)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
