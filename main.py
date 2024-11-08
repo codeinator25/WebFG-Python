@@ -1,95 +1,124 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QProgressBar
+from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QProgressBar, QTabWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtCore import QUrl
 
-class Browser(QMainWindow): # Open the homepage on startup
+class BrowserTab(QWidget):
     def __init__(self):
         super().__init__()
+        self.layout = QVBoxLayout(self)
+
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://www.google.com"))
-        self.browser.loadProgress.connect(self.update_load)
+        self.layout.addWidget(self.browser)
 
         # Create a progress bar
         self.loading_bar = QProgressBar()
         self.loading_bar.setValue(0)
+        self.layout.addWidget(self.loading_bar)
+
+        # Create a navbar
+        self.navbar = QHBoxLayout()
         self.url_bar = QLineEdit()
         self.url_bar.returnPressed.connect(self.navigate_to_url)
 
-        # Create navigation buttons
+        # Create buttons for the navbar
         self.back_button = QPushButton("Back")
-        self.back_button.clicked.connect(self.go_back) # Go to the previous page
+        self.back_button.clicked.connect(self.go_back)
 
         self.forward_button = QPushButton("Forward")
-        self.forward_button.clicked.connect(self.go_forward) # Go to the following page
+        self.forward_button.clicked.connect(self.go_forward)
 
         self.refresh_button = QPushButton("Refresh")
-        self.refresh_button.clicked.connect(self.refresh_page) # Refresh the page
+        self.refresh_button.clicked.connect(self.refresh_page)
 
-        self.home_button = QPushButton("Home") 
-        self.home_button.clicked.connect(self.go_home) # Take action upon clicking the button
+        self.home_button = QPushButton("Home")
+        self.home_button.clicked.connect(self.go_home)
 
-        # Layout for the navigation bar
-        nav_layout = QHBoxLayout()
-        nav_layout.addWidget(self.back_button)
-        nav_layout.addWidget(self.forward_button)
-        nav_layout.addWidget(self.refresh_button)
-        nav_layout.addWidget(self.url_bar)
-        nav_layout.addWidget(self.home_button)
+        # Add buttons to the navigation bar
+        self.navbar.addWidget(self.back_button)
+        self.navbar.addWidget(self.forward_button)
+        self.navbar.addWidget(self.refresh_button)
+        self.navbar.addWidget(self.url_bar)
+        self.navbar.addWidget(self.home_button)
 
-        # Main layout
-        self.layout = QVBoxLayout()
-        self.layout.addLayout(nav_layout)
-        self.layout.addWidget(self.loading_bar) # Used to see the loading state of a website
-        self.layout.addWidget(self.browser)
-
-        container = QWidget()
-        container.setLayout(self.layout)
-        self.setCentralWidget(container)
-
-        self.setWindowTitle("WebFG Project - Browser")  # Set the window title
-        self.resize(1000, 700)  # Set the window size
+        # Add the navbar to the layout
+        self.layout.addLayout(self.navbar)
 
         # Connect signals for loading progress
         self.browser.loadStarted.connect(self.on_load_started)
         self.browser.loadFinished.connect(self.on_load_finished)
+        self.browser.loadProgress.connect(self.update_load)
 
-        self.show()
-
-    def navigate_to_url(self): # Open website on startup
+    def navigate_to_url(self):
         url = self.url_bar.text()
         if not url.startswith("http://") and not url.startswith("https://"):
             url = "http://" + url
         self.browser.setUrl(QUrl(url))
 
     def refresh_page(self):
-        self.browser.reload()  # Reload the current page
+        self.browser.reload()
 
     def go_back(self):
-        self.browser.back()  # Go back in history
+        self.browser.back()
 
     def go_forward(self):
-        self.browser.forward()  # Go forward in history
+        self.browser.forward()
 
     def go_home(self):
-        url = "http://google.com" # Desired home page
-        self.browser.setUrl(QUrl(url)) # Going to the home page
+        url = "http://google.com"
+        self.browser.setUrl(QUrl(url))
 
     def on_load_started(self):
-        self.loading_bar.setValue(0) # Reset loading bar
-        self.loading_bar.setMaximum(100)
+        self.loading_bar.setValue(0)
 
     def on_load_finished(self, success):
-        self.loading_bar.setValue(100) # Set loading bar to complete
+        self.loading_bar.setValue(100)
         if success:
-            self.url_bar.setText(self.browser.url().toString()) # Update URL bar with current URL
+            self.url_bar.setText(self.browser.url().toString())
         else:
             print("Failed to load page.")
 
-    def update_load(self, progress): # Fill the loading bar using increments from the current progress
+    def update_load(self, progress):
         self.loading_bar.setValue(progress)
 
-if __name__ == "__main__": # I don't know why I did this
+class Browser(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.resize(1000, 700)
+        self.setWindowTitle("WebFG Project - Browser")
+
+        # Create a QTabWidget
+        self.tabs = QTabWidget()
+
+        # Create a button to add new tabs
+        self.new_tab_button = QPushButton("+")
+        self.new_tab_button.clicked.connect(self.add_new_tab)
+
+        # Create a tab bar layout
+        tab_layout = QHBoxLayout()
+        tab_layout.addWidget(self.tabs)
+        tab_layout.addWidget(self.new_tab_button)
+
+        # Create a main layout
+        main_layout = QVBoxLayout()
+        main_layout.addLayout(tab_layout)  # Add the tab layout to the main layout
+
+        # Create a central widget to hold the layout
+        container = QWidget()
+        container.setLayout(main_layout)
+        self.setCentralWidget(container)
+
+        # Add the first tab
+        self.add_new_tab()
+
+    def add_new_tab(self):
+        new_tab = BrowserTab()
+        self.tabs.addTab(new_tab, "New Tab")
+        self.tabs.setCurrentWidget(new_tab)
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = Browser()
+    window = Browser()  # This should be after the Browser class definition
+    window.show()
     sys.exit(app.exec())
