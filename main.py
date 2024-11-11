@@ -93,16 +93,28 @@ class Browser(QMainWindow):
 
         # Create a button to add new tabs
         self.new_tab_button = QPushButton("+")
+        self.new_tab_button.setFixedSize(27, 27)  # Set a fixed size for the button
         self.new_tab_button.clicked.connect(self.add_new_tab)
 
-        # Create a tab bar layout
+        # Create a button to delete the current tab
+        self.delete_tab_button = QPushButton("-")
+        self.delete_tab_button.setFixedSize(27, 27)
+        self.delete_tab_button.clicked.connect(self.delete_new_tab)
+
+        # Create a horizontal layout for the tabs and the new tab button
+        tabB_layout = QVBoxLayout()
+        tabB_layout.addWidget(self.new_tab_button)  # Add the new tab button
+        tabB_layout.addWidget(self.delete_tab_button) # Add the delete tab button
+        tabB_layout.setContentsMargins(0, 10, 0, 0)
+
+        # Create a section for tabs
         tab_layout = QHBoxLayout()
-        tab_layout.addWidget(self.tabs)
-        tab_layout.addWidget(self.new_tab_button)
+        tab_layout.addWidget(self.tabs)  # Add the tab widget
 
         # Create a main layout
-        main_layout = QVBoxLayout()
-        main_layout.addLayout(tab_layout)  # Add the tab layout to the main layout
+        main_layout = QHBoxLayout()
+        main_layout.addLayout(tab_layout)
+        main_layout.addLayout(tabB_layout) # Add the tab layout to the main layout
 
         # Create a central widget to hold the layout
         container = QWidget()
@@ -116,6 +128,11 @@ class Browser(QMainWindow):
         new_tab = BrowserTab()
         self.tabs.addTab(new_tab, "New Tab")
         self.tabs.setCurrentWidget(new_tab)
+
+    def delete_new_tab(self):
+        current_index = self.tabs.currentIndex()
+        if current_index != -1:
+            self.tabs.removeTab(current_index)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
