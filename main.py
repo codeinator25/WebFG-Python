@@ -29,19 +29,19 @@ class BrowserTab(QWidget):
 
         # Create buttons for the navbar
         self.back_button = QPushButton("Back")
-        self.back_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/arrow-left.png"))
+        self.back_button.setIcon(QIcon("Icons/arrow-left.png"))
         self.back_button.clicked.connect(self.go_back)
 
         self.forward_button = QPushButton("Forward")
-        self.forward_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/arrow-right.png"))
+        self.forward_button.setIcon(QIcon("Icons/arrow-right.png"))
         self.forward_button.clicked.connect(self.go_forward)
 
         self.refresh_button = QPushButton("Refresh")
-        self.refresh_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/reloading.png"))
+        self.refresh_button.setIcon(QIcon("Icons/reloading.png"))
         self.refresh_button.clicked.connect(self.refresh_page)
 
         self.home_button = QPushButton("Home")
-        self.home_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/home-page.png"))
+        self.home_button.setIcon(QIcon("Icons/home-page.png"))
         self.home_button.clicked.connect(self.go_home)
 
         # Add buttons to the navigation bar
