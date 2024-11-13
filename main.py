@@ -2,6 +2,11 @@ import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QProgressBar, QTabWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtCore import QUrl
+from PyQt6.QtGui import QIcon
+
+# Welcome message
+print("Hello! :D")
+print()
 
 class BrowserTab(QWidget):
     def __init__(self):
@@ -24,15 +29,19 @@ class BrowserTab(QWidget):
 
         # Create buttons for the navbar
         self.back_button = QPushButton("Back")
+        self.back_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/arrow-left.png"))
         self.back_button.clicked.connect(self.go_back)
 
         self.forward_button = QPushButton("Forward")
+        self.forward_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/arrow-right.png"))
         self.forward_button.clicked.connect(self.go_forward)
 
         self.refresh_button = QPushButton("Refresh")
+        self.refresh_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/reloading.png"))
         self.refresh_button.clicked.connect(self.refresh_page)
 
         self.home_button = QPushButton("Home")
+        self.home_button.setIcon(QIcon("/home/flopmind/Dev/WebFG-Python/Icons/home-page.png"))
         self.home_button.clicked.connect(self.go_home)
 
         # Add buttons to the navigation bar
@@ -101,10 +110,14 @@ class Browser(QMainWindow):
         self.delete_tab_button.setFixedSize(27, 27)
         self.delete_tab_button.clicked.connect(self.delete_new_tab)
 
+        # Create a button to open a blank page (placeholder)
+        self.blank_page_button = QPushButton("%")
+        self.blank_page_button.setFixedSize(27, 27)
+
         # Create a horizontal layout for the tabs and the new tab button
         tabB_layout = QVBoxLayout()
         tabB_layout.addWidget(self.new_tab_button)  # Add the new tab button
-        tabB_layout.addWidget(self.delete_tab_button) # Add the delete tab button
+        tabB_layout.addWidget(self.delete_tab_button)  # Add the delete tab button
         tabB_layout.setContentsMargins(0, 10, 0, 0)
 
         # Create a section for tabs
