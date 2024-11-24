@@ -69,7 +69,7 @@ requests-ftp==0.3.1
 rpm==4.19.1.1
 s3transfer==0.10.1
 selinux @ file:///builddir/build/BUILD/libselinux-3.6/src
-sentry-sdk==1.45.0
+sentry-sdk==2.8.0
 sepolicy @ file:///builddir/build/BUILD/selinux-3.6/python/sepolicy
 setools==4.5.1
 setroubleshoot @ file:///builddir/build/BUILD/setroubleshoot-3.3.33/src
