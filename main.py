@@ -1,7 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLineEdit, QVBoxLayout, QWidget, QPushButton, QHBoxLayout, QProgressBar, QTabWidget
 from PyQt6.QtWebEngineWidgets import QWebEngineView
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl, pyqtSignal
 from PyQt6.QtGui import QIcon
 
 # Welcome message
@@ -9,13 +9,19 @@ print("Hello! :D")
 print()
 
 class BrowserTab(QWidget):
+    title_changed = pyqtSignal(str)  # New signal for title change
+
     def __init__(self):
         super().__init__()
         self.layout = QVBoxLayout(self)
 
+        # Initialize the browser
         self.browser = QWebEngineView()
         self.browser.setUrl(QUrl("http://www.google.com"))
         self.layout.addWidget(self.browser)
+
+        # Connect the titleChanged signal
+        self.browser.page().titleChanged.connect(self.emit_title_changed)  # Connect title change signal
 
         # Create a progress bar
         self.loading_bar = QProgressBar()
@@ -29,19 +35,15 @@ class BrowserTab(QWidget):
 
         # Create buttons for the navbar
         self.back_button = QPushButton("Back")
-        self.back_button.setIcon(QIcon("Icons/arrow-left.png"))
         self.back_button.clicked.connect(self.go_back)
 
         self.forward_button = QPushButton("Forward")
-        self.forward_button.setIcon(QIcon("Icons/arrow-right.png"))
         self.forward_button.clicked.connect(self.go_forward)
 
         self.refresh_button = QPushButton("Refresh")
-        self.refresh_button.setIcon(QIcon("Icons/reloading.png"))
         self.refresh_button.clicked.connect(self.refresh_page)
 
         self.home_button = QPushButton("Home")
-        self.home_button.setIcon(QIcon("Icons/home-page.png"))
         self.home_button.clicked.connect(self.go_home)
 
         # Add buttons to the navigation bar
@@ -58,6 +60,9 @@ class BrowserTab(QWidget):
         self.browser.loadStarted.connect(self.on_load_started)
         self.browser.loadFinished.connect(self.on_load_finished)
         self.browser.loadProgress.connect(self.update_load)
+
+    def emit_title_changed(self, title):
+        self.title_changed.emit(title) # Emit the title change signal
 
     def navigate_to_url(self):
         url = self.url_bar.text()
@@ -140,8 +145,14 @@ class Browser(QMainWindow):
     def add_new_tab(self):
         new_tab = BrowserTab()
         self.tabs.addTab(new_tab, "New Tab")
+        new_tab.title_changed.connect(self.update_tab_title) # Connect the title change signal
         self.tabs.setCurrentWidget(new_tab)
 
+    def update_tab_title(self, title):
+        current_index = self.tabs.currentIndex()
+        if current_index != -1:
+            self.tabs.setTabText(current_index, title) # Update the tab title
+    
     def delete_new_tab(self):
         current_index = self.tabs.currentIndex()
         if current_index != -1:
