@@ -80,5 +80,5 @@ six==1.16.0
 sos==4.7.1
 soupsieve==2.5
 systemd-python==235
-urllib3==1.26.18
+urllib3==1.26.19
 xkbregistry==0.3
