@@ -63,7 +63,7 @@ pyxdg==0.27
 PyYAML==6.0.1
 qtwidgets==1.1
 regex==2024.4.16
-requests==2.31.0
+requests==2.32.2
 requests-file==2.0.0
 requests-ftp==0.3.1
 rpm==4.19.1.1
