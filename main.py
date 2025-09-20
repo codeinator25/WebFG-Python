@@ -6,7 +6,7 @@ from PyQt6.QtGui import QIcon
 
 # Welcome message
 print("Hello! :D")
-print()
+print("Feel free to use this project for whatever you wish.")
 
 class BrowserTab(QWidget):
     title_changed = pyqtSignal(str)  # New signal for title change
